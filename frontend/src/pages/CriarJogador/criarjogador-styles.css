@@ -1,0 +1,350 @@
+/* Estilos base */
+.character-selection-container {
+  position: relative;
+  min-height: 100vh;
+  background: radial-gradient(circle at center, #1a1a3a 0%, #0a0a1a 100%);
+  color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Efeitos de luz */
+.light-effect {
+  position: fixed;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.3;
+  z-index: 0;
+  animation: float 6s ease-in-out infinite;
+}
+
+.player-1-light {
+  background: #4cc9f0;
+  top: 20%;
+  left: 10%;
+}
+
+.player-2-light {
+  background: #f72585;
+  top: 20%;
+  right: 10%;
+  animation-delay: 0.5s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+/* Card dividido */
+.split-card-container {
+  width: 100%;
+  max-width: 1900px;
+  padding: 20px;
+  perspective: 1000px;
+}
+
+.split-card {
+  display: flex;
+  background: rgba(30, 30, 60, 0.8);
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+   min-height: 600px;
+  transform-style: preserve-3d;
+  animation: cardEntrance 0.8s ease-out;
+}
+
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(50px) rotateX(10deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0);
+  }
+}
+
+.card-left, .card-right {
+  flex: 1;
+  padding: 0;
+}
+
+.card-left {
+  position: relative;
+  min-height: auto;
+  background: linear-gradient(135deg, #1a1a3a, #0a0a1a);
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.9;
+  transition: all 0.5s ease;
+}
+
+.card-left:hover .card-image {
+  transform: scale(1.02);
+  opacity: 1;
+}
+
+.image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+}
+
+.card-right {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.card-header h1 {
+  font-size: 4rem;
+  margin-bottom: 30px;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(76, 201, 240, 0.5);
+}
+
+.card-header .game-mode-badge {
+  display: inline-block;
+  padding: 12px 30px; /* Aumentei o padding */
+  background: rgba(76, 201, 240, 0.15);
+  border-radius: 50px;
+  font-size: 1.8rem; /* Aumentei o tamanho da fonte */
+  font-weight: bold;
+  border: 3px solid #4cc9f0; /* Borda mais grossa */
+  color: white;
+  margin: 15px 0 40px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  box-shadow: 0 0 20px rgba(76, 201, 240, 0.4);
+  transition: all 0.3s ease;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Seletor de modo de jogo */
+.game-mode-selector {
+  margin-bottom: 30px;
+}
+
+.game-mode-selector h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+
+.mode-options {
+  display: flex;
+  gap: 15px;
+}
+
+.mode-option {
+  flex: 1;
+  padding: 25px;
+  border-radius: 8px;
+  background: rgba(40, 40, 80, 0.8);
+  font-size: 2rem;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  color: white;
+}
+
+.mode-option:hover {
+  background: rgba(76, 201, 240, 0.3);
+  transform: translateY(-3px);
+}
+
+.mode-option.active {
+  background: rgba(76, 201, 240, 0.2);
+  border-color: #4cc9f0;
+  box-shadow: 0 0 15px rgba(76, 201, 240, 0.3);
+}
+
+/* Formulário */
+.player-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-group label {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.form-group small{
+  font-size: 1.5rem;
+  padding: 1px 30px 20px;
+}
+
+.form-group input {
+  background: rgba(20, 20, 50, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px 15px;
+  background: #ffffff;
+  color: #000000;
+  font-size: 2rem;
+  transition: all 0.3s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #4cc9f0;
+  box-shadow: 0 0 10px rgba(76, 201, 240, 0.3);
+}
+
+/* Mensagem de erro */
+.error-message {
+  color: #f72585;
+  text-align: center;
+  margin: 10px 0;
+  font-size: 0.9rem;
+  animation: shake 0.5s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+/* Botão de confirmação */
+.confirm-button {
+  background: linear-gradient(135deg, #f72585, #b5179e);
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 3rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.confirm-button:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(247, 37, 133, 0.6);
+}
+
+.confirm-button:disabled {
+  background: #4e4e8d;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.confirm-button:before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0)
+  );
+  transform: rotate(30deg);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%) rotate(30deg); }
+  100% { transform: translateX(100%) rotate(30deg); }
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+  .split-card {
+    flex-direction: column;
+  }
+  
+  .card-left {
+    min-height: 300px;
+  }
+  
+  .card-right {
+    padding: 30px;
+  }
+}
+
+@media (max-width: 600px) {
+  .card-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .mode-options {
+    flex-direction: column;
+  }
+  
+  .confirm-button {
+    font-size: 1rem;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-right {
+    padding: 20px;
+  }
+  
+  .game-mode-badge {
+    font-size: 0.9rem;
+  }
+}

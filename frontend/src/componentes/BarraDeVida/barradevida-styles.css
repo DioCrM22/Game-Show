@@ -1,0 +1,38 @@
+.barra-de-vida-container {
+  width: 100%;
+  margin: 1rem 0;
+  font-family: Arial, sans-serif;
+}
+
+.barra-de-vida-label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.barra-de-vida-wrapper {
+  position: relative;
+  width: 100%;
+  height: 30px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.barra-de-vida-fill {
+  height: 100%;
+  transition: width 0.3s ease-out;
+}
+
+.barra-de-vida-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #000;
+  font-weight: bold;
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.7);
+  font-size: 1.5rem;
+}
