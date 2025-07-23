@@ -8,7 +8,7 @@ export default defineConfig({
     port: parseInt(process.env.PORT) || 3000,
     strictPort: true,
     allowedHosts: [
-      'game-show-frontend.onrender.com/',
+      'game-show-frontend.onrender.com',
       'localhost',
       'game-show-frontend', // Nome do serviço no Render (sem .onrender.com)
       '127.0.0.1'
