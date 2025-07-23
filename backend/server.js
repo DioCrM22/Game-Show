@@ -6,6 +6,7 @@ import heroRoutes from './routes/heroRoutes.js';
 import playerRoutes from './routes/playerRoutes.js';
 import battleRoutes from './routes/battleRoutes.js';
 import errorHandler from './middleware/errorHandler.js';
+import corsMiddleware from './middleware/corsMiddleware.js';
 
 dotenv.config();
 const app = express();
@@ -20,6 +21,7 @@ app.get('/', (req, res) => res.send('🚀 API Game Show funcionando!'));
 
 // Error handler
 app.use(errorHandler);
+app.use(corsMiddleware);
 
 const startServer = async () => {
   try {

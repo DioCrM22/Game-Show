@@ -4,11 +4,20 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: true, // ou '0.0.0.0' para expor em todos os endereços
-    port: process.env.PORT || 3000, // Usa a porta do Render ou 3000 localmente
-    strictPort: true // Fecha se a porta estiver em uso
+    host: true, // Equivalente a '0.0.0.0' + melhor compatibilidade
+    port: parseInt(process.env.PORT) || 3000, // Conversão explícita para número
+    strictPort: true,
+    hmr: {
+      clientPort: 443, // Importante para HMR no Render (usar 443 para HTTPS)
+    }
   },
   preview: {
-    port: process.env.PORT || 3000 // Configuração para o preview (build)
+    port: parseInt(process.env.PORT) || 3000,
+    host: true
+  },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+    sourcemap: process.env.NODE_ENV !== 'production'
   }
 });
