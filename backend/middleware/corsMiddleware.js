@@ -1,10 +1,23 @@
 import cors from 'cors';
 
-export default cors({
-  origin: [
+const allowedOrigins = [
     'https://game-show-frontend.onrender.com',
     'http://localhost:3000',
-    'https://game-show-backend.onrender.com' // Seu backend no Render
+    'https://game-show-9x0p.onrender.com'
   ],
-  credentials: true
-});
+  const corsOptions = {
+  origin: (origin, callback) => {
+    // Permite requisições sem origem (como mobile apps ou curl)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Acesso bloqueado por CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+export default cors(corsOptions);
