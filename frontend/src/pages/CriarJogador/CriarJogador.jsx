@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../../services/api';
-import './criarJogador-styles.css';
+import './criarjogador-styles.css';
 
 export default function CriarJogador() {
   const navigate = useNavigate();
