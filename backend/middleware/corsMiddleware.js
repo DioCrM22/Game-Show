@@ -1,13 +1,13 @@
 import cors from 'cors';
 
 const allowedOrigins = [
-    'https://game-show-frontend.onrender.com',
-    'http://localhost:3000',
-    'https://game-show-9x0p.onrender.com'
-  ],
-  const corsOptions = {
+  'https://game-show-frontend.onrender.com',
+  'http://localhost:3000',
+  'https://game-show-9x0p.onrender.com'
+];
+
+const corsOptions = {
   origin: (origin, callback) => {
-    // Permite requisições sem origem (como mobile apps ou curl)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -20,4 +20,6 @@ const allowedOrigins = [
   optionsSuccessStatus: 200
 };
 
-export default cors(corsOptions);
+// Exporte apenas uma vez, remova a linha duplicada
+const corsMiddleware = cors(corsOptions);
+export default corsMiddleware;
