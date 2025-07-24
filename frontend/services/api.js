@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Configuração base da API
 const api = axios.create({
-  baseURL: (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api', // Adicionado /api
+  baseURL: (import.meta.env.VITE_API_URL || 'http://localhost:5000'),
   timeout: 15000, // Aumentado para 15 segundos (Render pode ser lento no plano free)
   withCredentials: true,
   headers: {
