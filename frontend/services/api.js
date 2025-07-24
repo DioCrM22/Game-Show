@@ -2,35 +2,50 @@ import axios from 'axios';
 
 // Configuração base da API
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
-  timeout: 10000, // 10 segundos
-  withCredentials: true, // Para enviar cookies/tokens
+  baseURL: (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api', // Adicionado /api
+  timeout: 15000, // Aumentado para 15 segundos (Render pode ser lento no plano free)
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   }
 });
 
-// Interceptores para tratamento global de erros
+// Interceptores melhorados
 api.interceptors.response.use(
-  response => response,
-  error => {
-    if (error.response) {
-      // Erros 4xx/5xx
-      console.error('Erro na resposta:', {
-        status: error.response.status,
-        data: error.response.data
-      });
-    } else if (error.request) {
-      // Requisição foi feita mas não houve resposta
-      console.error('Sem resposta do servidor:', error.request);
-    } else {
-      // Erro ao configurar a requisição
-      console.error('Erro na configuração:', error.message);
+  response => {
+    // Padroniza resposta de sucesso
+    if (response.data && !response.data.success) {
+      console.warn('Resposta sem formato padrão:', response.data);
     }
+    return response;
+  },
+  error => {
+    // Tratamento detalhado de erros
+    const errorData = {
+      config: error.config,
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    };
+
+    console.error('Erro na requisição:', errorData);
     
-    return Promise.reject(error);
+    // Transforma em erro padrão da aplicação
+    const apiError = new Error(errorData.message || 'Erro na requisição');
+    apiError.details = errorData;
+    
+    return Promise.reject(apiError);
   }
 );
+
+// Métodos auxiliares
+api.handleError = (error) => {
+  console.error('Erro tratado:', error.details || error.message);
+  return {
+    success: false,
+    error: error.details?.data?.error || 'Erro na comunicação com o servidor'
+  };
+};
 
 export default api;
