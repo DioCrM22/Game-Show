@@ -3,12 +3,11 @@ import Hero from '../models/Hero.js';
 
 // Cria novo jogador com herói associado
 export const createPlayer = async (req, res) => {
-  const { nome, heroi_id } = req.body;
+  const { nome } = req.body;
   
   try {
     const player = await Player.create({ 
-      nome, 
-      heroi_id 
+      nome
     });
     res.status(201).json(player);
   } catch (err) {
