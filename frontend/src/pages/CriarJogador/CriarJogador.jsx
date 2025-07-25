@@ -123,7 +123,7 @@ export default function CriarJogador() {
     try {
       const nomeFormatado = formatarNome(nome);
       const response = await api.post('/players', { 
-        nome: nomeFormatado,
+        nome: nomeFormatado
       });
       
       if (!response.data.success) {

@@ -6,26 +6,28 @@ export const createPlayer = async (req, res) => {
   try {
     const { nome, heroi_id } = req.body;
 
-    // Validação simples para exigir heroi_id
-    if (!heroi_id) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'O campo heroi_id é obrigatório para criar um jogador.' 
+    // Validação simples para nome
+    if (!nome || nome.trim() === "") {
+      return res.status(400).json({
+        success: false,
+        error: 'O campo nome é obrigatório para criar um jogador.'
       });
     }
 
-    // Opcional: verificar se o heroi_id existe no banco antes de criar
-    const hero = await Hero.findByPk(heroi_id);
-    if (!hero) {
-      return res.status(400).json({
-        success: false,
-        error: 'Herói informado não existe.'
-      });
+    // Se heroi_id for enviado, valida se existe
+    if (heroi_id) {
+      const hero = await Hero.findByPk(heroi_id);
+      if (!hero) {
+        return res.status(400).json({
+          success: false,
+          error: 'Herói informado não existe.'
+        });
+      }
     }
 
     const novoJogador = await Player.create({
       nome,
-      heroi_id: null,
+      heroi_id: heroi_id || null,
       vitorias: 0,
       derrotas: 0
     });
