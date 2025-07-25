@@ -25,7 +25,7 @@ export const createPlayer = async (req, res) => {
 
     const novoJogador = await Player.create({
       nome,
-      heroi_id,
+      heroi_id: null,
       vitorias: 0,
       derrotas: 0
     });

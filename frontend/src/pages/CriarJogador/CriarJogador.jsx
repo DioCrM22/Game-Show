@@ -10,7 +10,8 @@ export default function CriarJogador() {
   const [jogador2, setJogador2] = useState('');
   const [erro, setErro] = useState(null);
   const [carregando, setCarregando] = useState(false);
-  const [tema, setTema] = useState('dark');
+  const [tema] = useState('dark');
+  const [heroiIdSelecionado, setHeroiIdSelecionado] = useState(null);
 
   // Efeito para alternar tema
   useEffect(() => {
@@ -118,7 +119,7 @@ export default function CriarJogador() {
     }
   };
 
-  const criarJogador = async (nome) => {
+  const criarJogador = async (nome, heroiIdSelecionado) => {
     try {
       const nomeFormatado = formatarNome(nome);
       const response = await api.post('/players', { 
@@ -157,8 +158,8 @@ export default function CriarJogador() {
 
       // Cria jogadores
       const [jogador1Data, jogador2Data] = await Promise.all([
-        criarJogador(jogador1),
-        modoJogo === 'multiplayer' ? criarJogador(jogador2) : Promise.resolve({ 
+        criarJogador(jogador1, heroiIdSelecionado),
+        modoJogo === 'multiplayer' ? criarJogador(jogador2, heroiIdSelecionado) : Promise.resolve({ 
           id: -1, 
           nome: 'CPU',
           hero: null 
