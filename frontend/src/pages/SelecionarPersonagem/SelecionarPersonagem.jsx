@@ -121,7 +121,7 @@ export default function SelecionarPersonagem() {
     const carregarHerois = async () => {
       try {
         setCarregando(true);
-        const response = await api.get('/herois/');
+        const response = await api.get('/hero/');
         const dadosBrutos = response.data?.data || response.data;
         
         if (!dadosBrutos) throw new Error('Estrutura de dados inválida');
@@ -238,7 +238,7 @@ export default function SelecionarPersonagem() {
 
   const corrigirCaminhoImagem = (url, nome) => {
     if (!url) return `/images/${nome.toLowerCase()}.jpg`;
-    return url.replace('/herois/', '/').replace(/\.(png|jpeg|gif)$/, '.jpg');
+    return url.replace('/hero/', '/').replace(/\.(png|jpeg|gif)$/, '.jpg');
   };
 
   if (carregando) {

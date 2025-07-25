@@ -22,9 +22,9 @@ app.use(express.json());
 app.use(corsMiddleware); // CORS deve ser o primeiro middleware
 
 // Rotas
-app.use('/api/herois', heroRoutes);
-app.use('/api/jogadores', playerRoutes);
-app.use('/api/batalhas', battleRoutes);
+app.use('/api/hero', heroRoutes);
+app.use('/api/players', playerRoutes);
+app.use('/api/battle', battleRoutes);
 
 // Rota raiz
 app.get('/', (req, res) => res.send('🚀 API Game Show funcionando!'));
