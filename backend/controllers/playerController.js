@@ -3,15 +3,20 @@ import Hero from '../models/Hero.js';
 
 // Cria novo jogador com herói associado
 export const createPlayer = async (req, res) => {
-  const { nome } = req.body;
-  
   try {
-    const player = await Player.create({ 
-      nome
+    const { nome, heroi_id } = req.body;
+
+    const novoJogador = await Player.create({
+      nome,
+      heroi_id: heroi_id ?? null,
     });
-    res.status(201).json(player);
-  } catch (err) {
-    res.status(500).json({ error: 'Falha ao criar jogador' });
+
+    console.log('Dados recebidos no body:', req.body)
+
+    res.status(201).json(novoJogador);
+  } catch (error) {
+    console.error('Erro ao criar jogador:', error);
+    res.status(500).json({ error: 'Erro interno ao criar jogador' });
   }
 };
 
