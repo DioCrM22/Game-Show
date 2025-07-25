@@ -6,17 +6,34 @@ export const createPlayer = async (req, res) => {
   try {
     const { nome, heroi_id } = req.body;
 
+    // Validação simples para exigir heroi_id
+    if (!heroi_id) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'O campo heroi_id é obrigatório para criar um jogador.' 
+      });
+    }
+
+    // Opcional: verificar se o heroi_id existe no banco antes de criar
+    const hero = await Hero.findByPk(heroi_id);
+    if (!hero) {
+      return res.status(400).json({
+        success: false,
+        error: 'Herói informado não existe.'
+      });
+    }
+
     const novoJogador = await Player.create({
       nome,
-      heroi_id: heroi_id ?? null,
+      heroi_id,
+      vitorias: 0,
+      derrotas: 0
     });
 
-    console.log('Dados recebidos no body:', req.body)
-
-    res.status(201).json(novoJogador);
+    res.status(201).json({ success: true, data: novoJogador });
   } catch (error) {
     console.error('Erro ao criar jogador:', error);
-    res.status(500).json({ error: 'Erro interno ao criar jogador' });
+    res.status(500).json({ success: false, error: 'Erro interno ao criar jogador' });
   }
 };
 

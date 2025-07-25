@@ -9,7 +9,7 @@ const Player = sequelize.define('Player', {
   },
   heroi_id: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: false,
     references: {
       model: Hero,
       key: 'id'
