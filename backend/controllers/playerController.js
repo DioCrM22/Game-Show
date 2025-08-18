@@ -57,6 +57,21 @@ export const getRanking = async (req, res) => {
   }
 };
 
+// Verifica se o nome do jogador já existe
+export const checkPlayerName = async (req, res) => {
+  try {
+    const { nome } = req.query;
+    if (!nome) {
+      return res.status(400).json({ success: false, error: 'Nome é obrigatório para verificação.' });
+    }
+    const player = await Player.findOne({ where: { nome: nome.trim() } });
+    res.json({ success: true, existe: !!player });
+  } catch (error) {
+    console.error('Erro ao verificar nome do jogador:', error);
+    res.status(500).json({ success: false, error: 'Erro interno ao verificar nome do jogador' });
+  }
+};
+
 // Simula batalha entre dois jogadores
 export const fight = async (req, res) => {
   const { player1Id, player2Id } = req.body;

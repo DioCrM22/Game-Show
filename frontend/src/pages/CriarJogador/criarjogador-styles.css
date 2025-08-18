@@ -310,7 +310,191 @@
 }
 
 /* Responsividade */
-@media (max-width: 900px) {
+/* Desktop grande (1920px+) */
+@media (min-width: 1920px) {
+  .split-card-container {
+    max-width: 2200px;
+  }
+  
+  .card-header h1 {
+    font-size: 5rem;
+  }
+  
+  .game-mode-badge {
+    font-size: 2rem;
+    padding: 15px 35px;
+  }
+  
+  .mode-option {
+    font-size: 2.2rem;
+    padding: 30px;
+  }
+  
+  .form-group label {
+    font-size: 2.2rem;
+  }
+  
+  .form-group input {
+    font-size: 2.2rem;
+    padding: 15px 20px;
+  }
+  
+  .confirm-button {
+    font-size: 3.2rem;
+    padding: 18px;
+  }
+}
+
+/* Desktop médio (1440px - 1919px) */
+@media (min-width: 1440px) and (max-width: 1919px) {
+  .split-card-container {
+    max-width: 1600px;
+  }
+  
+  .card-header h1 {
+    font-size: 4.5rem;
+  }
+  
+  .game-mode-badge {
+    font-size: 1.9rem;
+    padding: 14px 32px;
+  }
+  
+  .mode-option {
+    font-size: 2.1rem;
+    padding: 28px;
+  }
+  
+  .form-group label {
+    font-size: 2.1rem;
+  }
+  
+  .form-group input {
+    font-size: 2.1rem;
+    padding: 14px 18px;
+  }
+  
+  .confirm-button {
+    font-size: 3.1rem;
+    padding: 17px;
+  }
+}
+
+/* Desktop padrão (1200px - 1439px) */
+@media (min-width: 1200px) and (max-width: 1439px) {
+  .split-card-container {
+    max-width: 1400px;
+  }
+  
+  .card-header h1 {
+    font-size: 4rem;
+  }
+  
+  .game-mode-badge {
+    font-size: 1.8rem;
+    padding: 12px 30px;
+  }
+  
+  .mode-option {
+    font-size: 2rem;
+    padding: 25px;
+  }
+  
+  .form-group label {
+    font-size: 2rem;
+  }
+  
+  .form-group input {
+    font-size: 2rem;
+    padding: 12px 15px;
+  }
+  
+  .confirm-button {
+    font-size: 3rem;
+    padding: 15px;
+  }
+}
+
+/* Desktop pequeno (992px - 1199px) */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .split-card-container {
+    max-width: 1100px;
+  }
+  
+  .card-header h1 {
+    font-size: 3.5rem;
+  }
+  
+  .game-mode-badge {
+    font-size: 1.6rem;
+    padding: 10px 25px;
+  }
+  
+  .mode-option {
+    font-size: 1.8rem;
+    padding: 20px;
+  }
+  
+  .form-group label {
+    font-size: 1.8rem;
+  }
+  
+  .form-group input {
+    font-size: 1.8rem;
+    padding: 10px 12px;
+  }
+  
+  .confirm-button {
+    font-size: 2.5rem;
+    padding: 12px;
+  }
+}
+
+/* Tablet landscape (768px - 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .split-card {
+    flex-direction: column;
+  }
+  
+  .card-left {
+    min-height: 350px;
+  }
+  
+  .card-right {
+    padding: 35px;
+  }
+  
+  .card-header h1 {
+    font-size: 3rem;
+  }
+  
+  .game-mode-badge {
+    font-size: 1.4rem;
+    padding: 8px 20px;
+  }
+  
+  .mode-option {
+    font-size: 1.6rem;
+    padding: 18px;
+  }
+  
+  .form-group label {
+    font-size: 1.6rem;
+  }
+  
+  .form-group input {
+    font-size: 1.6rem;
+    padding: 8px 10px;
+  }
+  
+  .confirm-button {
+    font-size: 2rem;
+    padding: 10px;
+  }
+}
+
+/* Tablet portrait e mobile landscape (600px - 767px) */
+@media (max-width: 767px) {
   .split-card {
     flex-direction: column;
   }
@@ -322,29 +506,76 @@
   .card-right {
     padding: 30px;
   }
-}
-
-@media (max-width: 600px) {
+  
   .card-header h1 {
-    font-size: 1.8rem;
+    font-size: 2.5rem;
+  }
+  
+  .game-mode-badge {
+    font-size: 1.2rem;
+    padding: 6px 15px;
   }
   
   .mode-options {
     flex-direction: column;
+    gap: 10px;
+  }
+  
+  .mode-option {
+    font-size: 1.4rem;
+    padding: 15px;
+  }
+  
+  .form-group label {
+    font-size: 1.4rem;
+  }
+  
+  .form-group input {
+    font-size: 1.4rem;
+    padding: 6px 8px;
   }
   
   .confirm-button {
-    font-size: 1rem;
-    padding: 12px;
+    font-size: 1.6rem;
+    padding: 8px;
   }
 }
 
+/* Mobile portrait (480px e abaixo) */
 @media (max-width: 480px) {
+  .character-selection-container {
+    padding: 10px;
+  }
+  
   .card-right {
     padding: 20px;
   }
   
+  .card-header h1 {
+    font-size: 2rem;
+  }
+  
   .game-mode-badge {
-    font-size: 0.9rem;
+    font-size: 1rem;
+    padding: 4px 10px;
+  }
+  
+  .mode-option {
+    font-size: 1.2rem;
+    padding: 12px;
+  }
+  
+  .form-group label {
+    font-size: 1.2rem;
+  }
+  
+  .form-group input {
+    font-size: 1.2rem;
+    padding: 4px 6px;
+  }
+  
+  .confirm-button {
+    font-size: 1.4rem;
+    padding: 6px;
   }
 }
