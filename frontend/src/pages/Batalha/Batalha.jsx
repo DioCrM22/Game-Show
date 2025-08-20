@@ -49,6 +49,9 @@ export default function Batalha() {
           name: jogador1.nome,
           hero: {
             ...jogador1.hero,
+            vida_base: jogador1.hero.vida_base || 100,
+            defesa: jogador1.hero.defesa || 10,
+            velocidade: jogador1.hero.velocidade || 50,
             ataques: {
               basico: {
                 nome: jogador1.hero.ataques?.basico?.nome || 'Ataque Básico',
@@ -81,6 +84,9 @@ export default function Batalha() {
           name: isCPU ? 'CPU' : jogador2.nome,
           hero: {
             ...jogador2.hero,
+            vida_base: jogador2.hero.vida_base || 100,
+            defesa: jogador2.hero.defesa || 10,
+            velocidade: jogador2.hero.velocidade || 50,
             ataques: {
               basico: {
                 nome: jogador2.hero.ataques?.basico?.nome || 'Ataque Básico',
@@ -194,7 +200,7 @@ export default function Batalha() {
   };
 
   const determineCPUAttack = (cpuHero, specialReady) => {
-    if (specialReady && Math.random() > 0.7) return 'special';
+    if (specialReady && Math.random() > 0.3) return 'special';
     return Math.random() > 0.6 ? 'basico' : 'rapido';
   };
 

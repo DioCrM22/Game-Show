@@ -180,7 +180,7 @@ export const executeTurn = async (req, res) => {
       winner: battleOver ? {
         id: winner.id,
         name: winner.hero.nome,
-        victoryAnimation: winner.hero.gif_vitoria
+        victoryAnimation: winner.hero.gif_saida
       } : null,
       health: {
         player1: Math.max(0, battle.health.p1),

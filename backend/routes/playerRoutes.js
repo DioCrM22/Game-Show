@@ -4,12 +4,16 @@ import {
   createPlayer,
   getRanking,
   checkPlayerName,
+  updatePlayer,
 } from '../controllers/playerController.js';
 
 const router = express.Router();
 
 // POST /api/jogadores - Cria jogador
 router.post('/', createPlayer);
+
+// PUT /api/players/:id - Atualiza jogador ✅ ADICIONE ESTA ROTA
+router.put('/:id', updatePlayer);
 
 // GET /api/jogadores/ranking - Ranking por vitórias
 router.get('/ranking', getRanking);

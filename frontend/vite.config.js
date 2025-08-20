@@ -1,31 +1,24 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import path from 'path'; // Importe o módulo path
+import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
   server: {
     host: true,
-    port: parseInt(process.env.PORT) || 3000,
-    strictPort: true,
-    allowedHosts: [
-      'game-show-frontend.onrender.com',
-      'localhost',
-      'game-show-frontend',
-      '127.0.0.1'
-    ],
+    port: 3000,  // ✅ Porta fixa para desenvolvimento
+    strictPort: false,  // ✅ Permite outras portas se 3000 estiver ocupada
+    // REMOVA allowedHosts - não é necessário localmente
     hmr: {
-      clientPort: 443
+      port: 3001  // ✅ Porta diferente para HMR
     }
   },
   preview: {
-    host: true,
-    port: parseInt(process.env.PORT) || 3000,
-    allowedHosts: 'all'
+    port: 3000  // ✅ Porta simples para preview
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src') // Exemplo de uso do path
+      '@': path.resolve(__dirname, './src')
     }
   }
 });

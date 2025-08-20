@@ -4,7 +4,7 @@ import Hero from '../models/Hero.js';
 // Cria novo jogador com herói associado
 export const createPlayer = async (req, res) => {
   try {
-    const { nome, heroi_id } = req.body;
+    const { nome } = req.body;
 
     // Validação simples para nome
     if (!nome || nome.trim() === "") {
@@ -14,28 +14,24 @@ export const createPlayer = async (req, res) => {
       });
     }
 
-    // Se heroi_id for enviado, valida se existe
-    if (heroi_id) {
-      const hero = await Hero.findByPk(heroi_id);
-      if (!hero) {
-        return res.status(400).json({
-          success: false,
-          error: 'Herói informado não existe.'
-        });
-      }
-    }
-
     const novoJogador = await Player.create({
       nome,
-      heroi_id: heroi_id || null,
+      heroi_id: null,
       vitorias: 0,
       derrotas: 0
     });
 
-    res.status(201).json({ success: true, data: novoJogador });
+    res.status(201).json({ 
+      success: true, 
+      data: novoJogador 
+    });
+    
   } catch (error) {
     console.error('Erro ao criar jogador:', error);
-    res.status(500).json({ success: false, error: 'Erro interno ao criar jogador' });
+    res.status(500).json({ 
+      success: false, 
+      error: 'Erro interno do servidor' 
+    });
   }
 };
 
@@ -99,5 +95,52 @@ export const fight = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ error: 'Falha ao processar batalha' });
+  }
+};
+
+//Atualiza o jogador
+export const updatePlayer = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { heroi_id } = req.body;
+
+    const jogador = await Player.findByPk(id);
+    
+    if (!jogador) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Jogador não encontrado' 
+      });
+    }
+
+    // Atualiza apenas o herói se fornecido
+    if (heroi_id !== undefined) {
+      // Verifica se o herói existe
+      if (heroi_id !== null) {
+        const heroi = await Hero.findByPk(heroi_id);
+        if (!heroi) {
+          return res.status(400).json({
+            success: false,
+            error: 'Herói não encontrado'
+          });
+        }
+      }
+      
+      jogador.heroi_id = heroi_id;
+      await jogador.save();
+    }
+
+    res.json({ 
+      success: true, 
+      data: jogador,
+      message: 'Jogador atualizado com sucesso'
+    });
+    
+  } catch (error) {
+    console.error('Erro ao atualizar jogador:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Erro interno do servidor' 
+    });
   }
 };

@@ -20,10 +20,10 @@ const Hero = sequelize.define('Hero', {
     allowNull: false,
     defaultValue: 'default_ataque_especial.gif'
   },
-  gif_vitoria: {
+  gif_saida: {
     type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: 'default_vitoria.gif'
+    defaultValue: 'default_saida.gif'
   },
   // Atributos de combate
   vida_base: {
@@ -53,15 +53,15 @@ const Hero = sequelize.define('Hero', {
     }
   },
   // Ataque 1
-  ataque1_nome: {
+  ataque_basico_nome: {
     type: DataTypes.STRING,
     defaultValue: 'Ataque Básico'
   },
-  ataque1_dano: {
+  ataque_basico_dano: {
     type: DataTypes.INTEGER,
     defaultValue: 15
   },
-  ataque1_precisao: {
+  ataque_basico_precisao: {
     type: DataTypes.INTEGER,
     defaultValue: 80,
     validate: {
@@ -70,15 +70,15 @@ const Hero = sequelize.define('Hero', {
     }
   },
   // Ataque 2
-  ataque2_nome: {
+  ataque_rapido_nome: {
     type: DataTypes.STRING,
     defaultValue: 'Ataque Rápido'
   },
-  ataque2_dano: {
+  ataque_rapido_dano: {
     type: DataTypes.INTEGER,
     defaultValue: 10
   },
-  ataque2_precisao: {
+  ataque_rapido_precisao: {
     type: DataTypes.INTEGER,
     defaultValue: 90
   },

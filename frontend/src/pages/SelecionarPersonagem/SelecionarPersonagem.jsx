@@ -3,73 +3,27 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../../services/api';
 import './selecionarpersonagem-styles.css';
 
-const normalizeHeroData = (hero) => {
-  if (!hero) {
-    return {
-      id: -1,
-      nome: 'Herói Desconhecido',
-      imagem_url: '/images/default-hero.jpg',
-      vida_base: 100,
-      defesa: 10,
-      velocidade: 50,
-      forca: 18,
-      ataques: {
-        basico: {
-          nome: 'Ataque Básico',
-          dano: 15,
-          precisao: 80
-        },
-        rapido: {
-          nome: 'Ataque Rápido',
-          dano: 10,
-          precisao: 90
-        },
-        especial: {
-          nome: 'Ataque Especial',
-          dano: 30,
-          precisao: 70
-        }
-      },
-      gifs: {
-        entrada: '/gifs/default/entrada.gif',
-        especial: '/gifs/default/especial.gif',
-        saida: '/gifs/default/saida.gif'
-      }
-    };
-  }
-
-  // Extrai os valores dos ataques
-  const basicoDano = hero.ataques?.basico?.dano || hero.ataqueBasicoDano || 15;
-  const rapidoDano = hero.ataques?.rapido?.dano || hero.ataqueRapidoDano || 10;
-  const especialDano = hero.ataques?.especial?.dano || hero.ataqueEspecialDano || 30;
-
-  return {
-    ...hero,
-    forca: Math.round((basicoDano + rapidoDano + especialDano) / 3),
-    ataques: {
-      basico: {
-        nome: hero.ataques?.basico?.nome || hero.ataqueBasicoNome || 'Ataque Básico',
-        dano: basicoDano,
-        precisao: hero.ataques?.basico?.precisao || hero.ataqueBasicoPrecisao || 80
-      },
-      rapido: {
-        nome: hero.ataques?.rapido?.nome || hero.ataqueRapidoNome || 'Ataque Rápido',
-        dano: rapidoDano,
-        precisao: hero.ataques?.rapido?.precisao || hero.ataqueRapidoPrecisao || 90
-      },
-      especial: {
-        nome: hero.ataques?.especial?.nome || hero.ataqueEspecialNome || 'Ataque Especial',
-        dano: especialDano,
-        precisao: hero.ataques?.especial?.precisao || hero.ataqueEspecialPrecisao || 70
-      }
-    },
-    gifs: {
-      entrada: hero.gif_entrada || hero.gifEntrada || '/gifs/default/entrada.gif',
-      especial: hero.gif_ataque_especial || hero.gifAtaqueEspecial || '/gifs/default/especial.gif',
-      saida: hero.gif_saida || hero.gifSaida || '/gifs/default/saida.gif'
-    }
-  };
-};
+const getDefaultHero = () => ({
+  id: -1,
+  nome: 'Herói Desconhecido',
+  imagem_url: '/images/default-hero.jpg',
+  vida_base: 100,
+  defesa: 10,
+  velocidade: 50,
+  forca: 18,
+  ataque_basico_nome: 'Ataque Básico',
+  ataque_basico_dano: 15,
+  ataque_basico_precisao: 80,
+  ataque_rapido_nome: 'Ataque Rápido',
+  ataque_rapido_dano: 10,
+  ataque_rapido_precisao: 90,
+  ataque_especial_nome: 'Ataque Especial',
+  ataque_especial_dano: 30,
+  ataque_especial_precisao: 70,
+  gif_entrada: '/gifs/default/entrada.gif',
+  gif_ataque_especial: '/gifs/default/especial.gif',
+  gif_saida: '/gifs/default/saida.gif'
+});
 
 export default function SelecionarPersonagem() {
   const location = useLocation();
@@ -102,51 +56,166 @@ export default function SelecionarPersonagem() {
   }
 }, [manterJogadores, jogador1, jogador2, modoJogo]);
 
-  const atualizarJogadorComHeroi = async (jogadorId, heroiId) => {
-    if (jogadorId <= 0) return; // Não atualiza CPU
-    
+    useEffect(() => {
+  const carregarHerois = async () => {
     try {
-      await api.put(`/players/${jogadorId}`, { heroi_id: heroiId });
+      setCarregando(true);
+      const response = await api.get('/hero');
+      console.log('🎯 Dados brutos da API:', response.data);
+      
+      // DEBUG: Verificar a estrutura real da resposta
+      let heroesData = null;
+      
+      if (Array.isArray(response.data)) {
+        // Caso 1: A API retorna array diretamente
+        console.log('✅ Estrutura: Array direto');
+        heroesData = response.data;
+      } else if (response.data && Array.isArray(response.data.data)) {
+        // Caso 2: A API retorna { data: [...] }
+        console.log('✅ Estrutura: response.data.data');
+        heroesData = response.data.data;
+      } else if (response.data && response.data.success && Array.isArray(response.data.data)) {
+        // Caso 3: A API retorna { success: true, data: [...] }
+        console.log('✅ Estrutura: response.data.success.data');
+        heroesData = response.data.data;
+      } else {
+        console.error('❌ Estrutura desconhecida:', response.data);
+        throw new Error('Estrutura de dados inválida da API');
+      }
+      
+      if (!heroesData || heroesData.length === 0) {
+        console.warn('⚠️ Nenhum herói retornado pela API');
+        setHerois([getDefaultHero()]);
+        setHeroisDisponiveis([getDefaultHero()]);
+        return;
+      }
+
+      console.log('📋 Quantidade de heróis recebidos:', heroesData.length);
+      
+      const heroesComAtaquesFormatados = heroesData.map(hero => {
+        // DEBUG DETALHADO: Verificar TODOS os campos de cada herói
+        console.log('🦸 Herói completo recebido:', hero);
+        console.log('🎯 Campos de ataque verificados:', {
+          id: hero.id,
+          nome: hero.nome,
+          basico_nome: hero.ataque_basico_nome,
+          basico_dano: hero.ataque_basico_dano,
+          basico_precisao: hero.ataque_basico_precisao,
+          rapido_nome: hero.ataque_rapido_nome,
+          rapido_dano: hero.ataque_rapido_dano,
+          rapido_precisao: hero.ataque_rapido_precisao,
+          especial_nome: hero.ataque_especial_nome,
+          especial_dano: hero.ataque_especial_dano,
+          especial_precisao: hero.ataque_especial_precisao
+        });
+
+        // Calcular força baseada nos danos reais ou defaults
+        const danoBasico = hero.ataque_basico_dano || 15;
+        const danoRapido = hero.ataque_rapido_dano || 10;
+        const danoEspecial = hero.ataque_especial_dano || 30;
+        const forcaCalculada = Math.round((danoBasico + danoRapido + danoEspecial) / 3);
+
+        return {
+          ...hero,
+          vida_base: hero.vida_base || 100,
+          defesa: hero.defesa || 10,
+          velocidade: hero.velocidade || 50,
+          ataque_basico_nome: hero.ataque_basico_nome || 'Ataque Básico',
+          ataque_basico_dano: danoBasico,
+          ataque_basico_precisao: hero.ataque_basico_precisao || 80,
+          ataque_rapido_nome: hero.ataque_rapido_nome || 'Ataque Rápido',
+          ataque_rapido_dano: danoRapido,
+          ataque_rapido_precisao: hero.ataque_rapido_precisao || 90,
+          ataque_especial_nome: hero.ataque_especial_nome || 'Ataque Especial',
+          ataque_especial_dano: danoEspecial,
+          ataque_especial_precisao: hero.ataque_especial_precisao || 70,
+          
+          ataques: {
+            basico: {
+              nome: hero.ataque_basico_nome || 'Ataque Básico',
+              dano: danoBasico,
+              precisao: hero.ataque_basico_precisao || 80
+            },
+            rapido: {
+              nome: hero.ataque_rapido_nome || 'Ataque Rápido',
+              dano: danoRapido,
+              precisao: hero.ataque_rapido_precisao || 90
+            },
+            especial: {
+              nome: hero.ataque_especial_nome || 'Ataque Especial',
+              dano: danoEspecial,
+              precisao: hero.ataque_especial_precisao || 70
+            }
+          },
+          forca: forcaCalculada
+        };
+      });
+
+      console.log('✨ Heróis processados:', heroesComAtaquesFormatados);
+      
+      setHerois(heroesComAtaquesFormatados);
+      setHeroisDisponiveis(heroesComAtaquesFormatados);
+      
     } catch (error) {
-      console.error("Erro ao atualizar herói do jogador:", error);
-      throw error; // Propaga o erro para ser tratado no iniciarBatalha
+      console.error('❌ Erro crítico ao carregar heróis:', error);
+      setErro('Falha ao carregar personagens: ' + error.message);
+      setHerois([getDefaultHero()]);
+      setHeroisDisponiveis([getDefaultHero()]);
+    } finally {
+      setCarregando(false);
     }
   };
 
+  if (!jogador1) {
+    navigate('/criar-jogador', { replace: true });
+    return;
+  }
+
+  carregarHerois();
+}, [navigate, jogador1]);
+
+const atualizarJogadorComHeroi = async (jogadorId, heroiId) => {
+  if (jogadorId <= 0) return; // Não atualiza CPU
+  
+  try {
+    console.log('📝 Atualizando jogador', jogadorId, 'com herói', heroiId);
+    
+    const response = await api.put(`/players/${jogadorId}`, { 
+      heroi_id: heroiId 
+    });
+    
+    console.log('📋 Resposta da atualização:', response.data);
+    
+    if (response.data && response.data.success) {
+      console.log('✅ Jogador atualizado com sucesso');
+    } else {
+      console.warn('⚠️ Atualização do jogador retornou success: false');
+    }
+    
+  } catch (error) {
+    console.error('❌ Erro ao atualizar jogador:', error.response?.data || error.message);
+    // Não interrompe o fluxo - apenas loga o erro
+  }
+};
+
+const handleHeroSelection = async (jogadorNumero, heroi) => {
+  if (jogadorNumero === 1) {
+    setHeroiJogador1(heroi);
+    if (jogador1?.id) {
+      await atualizarJogadorComHeroi(jogador1.id, heroi.id);
+    }
+  } else {
+    setHeroiJogador2(heroi);
+    if (jogador2?.id && jogador2.id > 0) { // Só atualiza se não for CPU
+      await atualizarJogadorComHeroi(jogador2.id, heroi.id);
+    }
+  }
+};
+
   const mostrarDetalhesHeroi = useCallback((heroi) => {
-    setDetalhesHeroi(normalizeHeroData(heroi));
+    setDetalhesHeroi(heroi);
   }, []);
 
-  useEffect(() => {
-    const carregarHerois = async () => {
-      try {
-        setCarregando(true);
-        const response = await api.get('/hero/');
-        const dadosBrutos = response.data?.data || response.data;
-        
-        if (!dadosBrutos) throw new Error('Estrutura de dados inválida');
-        
-        const heroesNormalizados = Array.isArray(dadosBrutos) 
-          ? dadosBrutos.map(normalizeHeroData) 
-          : [normalizeHeroData(dadosBrutos)];
-        
-        setHerois(heroesNormalizados);
-        setHeroisDisponiveis(heroesNormalizados);
-      } catch (error) {
-        setErro('Falha ao carregar personagens');
-        setHerois([normalizeHeroData()]);
-      } finally {
-        setCarregando(false);
-      }
-    };
-
-    if (!jogador1) {
-      navigate('/criar-jogador', { replace: true });
-      return;
-    }
-
-    carregarHerois();
-  }, [navigate, jogador1]);
 
   useEffect(() => {
     if (modoJogo === 'multiplayer') {
@@ -200,7 +269,7 @@ export default function SelecionarPersonagem() {
     }
   }, []);
 
-  const iniciarBatalha = useCallback(async () => {
+const iniciarBatalha = useCallback(async () => {
   try {
     setCarregando(true);
     
@@ -209,25 +278,25 @@ export default function SelecionarPersonagem() {
       throw new Error('Selecione um herói para o Jogador 2');
     }
 
-    // Monta os dados mantendo IDs originais quando disponíveis
     const dadosBatalha = {
       modoJogo: modoJogoAtual,
       jogador1: {
         id: jogador1?.id || Date.now(),
         nome: nomeJogador1,
-        hero: normalizeHeroData(heroiJogador1)
+        hero: heroiJogador1 // ✅ Dados diretos do banco
       },
       jogador2: modoJogoAtual === 'multiplayer' ? {
         id: jogador2?.id || Date.now() + 1,
         nome: nomeJogador2,
-        hero: normalizeHeroData(heroiJogador2)
+        hero: heroiJogador2 // ✅ Dados diretos do banco
       } : {
         id: -1,
         nome: 'CPU',
-        hero: normalizeHeroData(heroiJogador2)
+        hero: heroiJogador2 // ✅ Dados diretos do banco
       }
     };
 
+    console.log('🚀 Dados enviados para batalha:', dadosBatalha);
     navigate('/batalha', { state: dadosBatalha });
   } catch (error) {
     setErro(error.message);
@@ -366,16 +435,13 @@ export default function SelecionarPersonagem() {
                   (heroiJogador1?.id === heroi.id || heroiJogador2?.id === heroi.id) ? 
                   'locked' : ''
                 }`}
-                onClick={() => {
-                  if (!heroiJogador1) {
-                    setHeroiJogador1(heroi);
-                  } else if ((modoJogoAtual === 'multiplayer' || modoJogoAtual === 'singleplayer') && !heroiJogador2) {
-                    setHeroiJogador2(heroi);
-                  }
-                }}
+                onClick={() => handleHeroSelection(
+                  !heroiJogador1 ? 1 : 2, 
+                  heroi
+                )}
                 onMouseEnter={() => {
                   if (!(heroiJogador1?.id === heroi.id || heroiJogador2?.id === heroi.id)) {
-                    mostrarDetalhesHeroi(heroi);
+                    setDetalhesHeroi(heroi);
                   }
                 }}
               >

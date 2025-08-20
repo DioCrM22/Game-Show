@@ -1,4 +1,4 @@
-/* Estilos base com tema dark moderno */
+/* Estilos base com tema dark moderno - RESPONSIVO */
 .batalha-container {
   position: relative;
   min-height: 100vh;
@@ -12,7 +12,7 @@
   align-items: center;
 }
 
-/* Efeitos de luz */
+/* Efeitos de luz responsivos */
 .light-effect {
   position: fixed;
   width: 300px;
@@ -21,21 +21,36 @@
   filter: blur(80px);
   opacity: 0.3;
   z-index: 0;
+  animation: float 8s ease-in-out infinite;
 }
 
 .player-1-light {
   background: #4cc9f0;
   top: 20%;
   left: 10%;
+  animation-delay: 0s;
 }
 
 .player-2-light {
   background: #f72585;
   top: 20%;
   right: 10%;
+  animation-delay: 3s;
 }
 
-/* Título */
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0px) scale(1) rotate(0deg); 
+  }
+  33% { 
+    transform: translateY(-30px) scale(1.1) rotate(5deg); 
+  }
+  66% { 
+    transform: translateY(20px) scale(0.9) rotate(-5deg); 
+  }
+}
+
+/* Título responsivo */
 .titulo {
   font-size: 4rem;
   margin: 30px 0;
@@ -45,6 +60,23 @@
   z-index: 2;
   text-align: center;
   animation: glow 2s infinite alternate;
+  background: white;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.titulo::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 25%;
+  right: 25%;
+  height: 5px;
+  background: linear-gradient(90deg, transparent, #4cc9f0, #f72585, transparent);
+  border-radius: 3px;
 }
 
 @keyframes glow {
@@ -56,33 +88,37 @@
   }
 }
 
-/* Área de combate */
+/* Área de combate responsiva */
 .combat-area {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 300%;
+  width: 100%;
   max-width: 1900px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
-  gap: 80px;
+  gap: 40px;
+  padding: 0 20px;
 }
 
-/* Personagens */
+/* Personagens responsivos */
 .character {
   flex: 1;
-  max-width: 450px;
-  background: rgba(30, 30, 60, 0.8);
-  border-radius: 15px;
-  padding: 40px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  max-width: 500px;
+  min-width: 280px;
+  background: rgba(30, 30, 60, 0.95);
+  border-radius: 25px;
+  padding: 30px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(15px);
+  border: 3px solid transparent;
 }
 
 .character::before {
@@ -97,7 +133,8 @@
 }
 
 .player1 {
-  border-top: 6px solid #4cc9f0;
+  border-image: linear-gradient(135deg, #4cc9f0, #4895ef, #4361ee);
+  border-image-slice: 1;
 }
 
 .player1::before {
@@ -105,18 +142,11 @@
 }
 
 .player2 {
-  border-top: 6px solid #f72585;
+  border-image: linear-gradient(135deg, #f72585, #b5179e, #7209b7);
+  border-image-slice: 1;
 }
 
 .player2::before {
-  background: linear-gradient(90deg, transparent, #f72585, transparent);
-}
-
-.player2.cpu {
-  border-top: 6px solid #f72585;
-}
-
-.player2.cpu::before {
   background: linear-gradient(90deg, transparent, #f72585, transparent);
 }
 
@@ -126,25 +156,27 @@
 }
 
 .character h2 {
-  font-size: 3rem;
-  margin-bottom: 50px;
+  font-size: 2.5rem;
+  margin-bottom: 30px;
   text-align: center;
   color: #fff;
   text-shadow: 0 2px 4px rgba(0,0,0,0.5);
   position: relative;
   z-index: 2;
+  font-weight: 700;
 }
 
-/* Container de imagem do personagem */
+/* Container de imagem do personagem responsivo */
 .character-image-container {
   width: 100%;
-  height: 100px;
-  border-radius: 10px;
+  height: 280px;
+  border-radius: 15px;
   overflow: hidden;
-  margin-bottom: 5px;
+  margin-bottom: 20px;
   background: linear-gradient(135deg, #1a1a3a, #0a0a1a);
   position: relative;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  border: 3px solid rgba(255, 255, 255, 0.1);
 }
 
 .character-image {
@@ -156,34 +188,36 @@
 
 .character-image.active-turn {
   transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
 }
 
-/* Barras de vida */
+/* Barras de vida responsivas */
 .health-bars {
   width: 100%;
-  margin-bottom: 20px;
-  background: rgba(20, 20, 50, 0.6);
-  padding: 10px;
-  font-size: 1.5rem;
-  border-radius: 8px;
+  margin-bottom: 25px;
+  background: rgba(20, 20, 50, 0.7);
+  padding: 15px;
+  font-size: 1.8rem;
+  border-radius: 12px;
   box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 .health-bars .barra-label {
   color: white !important;
   font-weight: bold;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
-  margin-bottom: 10px;
-  font-size: 1.5rem;
+  margin-bottom: 12px;
+  font-size: 1.8rem;
   display: block;
 }
 
-/* Área central de animação */
+/* Área central de animação responsiva */
 .animation-area {
   flex: 1;
-  max-width: 500px;
-  height: 400px;
+  max-width: 600px;
+  min-width: 300px;
+  height: 450px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -291,18 +325,19 @@
   opacity: 0.7;
 }
 
-/* Mensagens de batalha */
+/* Mensagens de batalha responsivas */
 .battle-message {
-  width: 130%;
-  padding: 30px;
-  background: rgba(0,0,0,0.7);
-  border-radius: 8px;
+  width: 100%;
+  padding: 25px;
+  background: rgba(0,0,0,0.8);
+  border-radius: 12px;
   text-align: center;
-  font-size: 1.9rem;
-  margin-top: 15px;
-  border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  font-size: 2.2rem;
+  margin-top: 20px;
+  border: 2px solid rgba(255,255,255,0.15);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
   animation: fadeIn 0.3s ease-out;
+  backdrop-filter: blur(10px);
 }
 
 .battle-over-message {
@@ -310,16 +345,19 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(0,0,0,0.9);
+  background: rgba(0,0,0,0.95);
   color: #ffcc00;
-  padding: 20px 40px;
-  border-radius: 10px;
-  font-size: 2.5rem;
+  padding: 30px 50px;
+  border-radius: 15px;
+  font-size: 3rem;
   z-index: 10;
   text-align: center;
-  box-shadow: 0 0 30px rgba(255,204,0,0.5);
-  border: 2px solid #ffcc00;
+  box-shadow: 0 0 40px rgba(255,204,0,0.6);
+  border: 3px solid #ffcc00;
   animation: victoryPulse 2s infinite, fadeIn 0.5s ease-out;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 @keyframes victoryPulse {
@@ -328,103 +366,105 @@
   100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 30px rgba(255,204,0,0.5); }
 }
 
-/* Botões de ataque */
+/* Botões de ataque responsivos */
 .attack-buttons {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 15px;
   width: 100%;
   margin-top: auto;
 }
 
 .attack-button {
   position: relative;
-  padding: 15px 20px;
+  padding: 20px 25px;
   border: none;
-  border-radius: 8px;
-  background: rgba(40,40,80,0.8);
+  border-radius: 12px;
+  background: rgba(40,40,80,0.9);
   color: white;
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   overflow: hidden;
   text-align: left;
   display: flex;
   align-items: center;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
 }
 
 .attack-button:hover:not(:disabled) {
-  transform: translateY(-3px);
-  box-shadow: 0 7px 14px rgba(0,0,0,0.3);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px rgba(0,0,0,0.4);
 }
 
 .attack-button:active:not(:disabled) {
-  transform: translateY(1px);
+  transform: translateY(2px);
 }
 
 .attack-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   background: #333;
+  transform: none !important;
 }
 
 /* Estilos específicos para cada tipo de ataque */
-.attack-button.normal1 {
-  border-left: 5px solid #4cc9f0;
-  background: linear-gradient(to right, rgba(76,201,240,0.1), rgba(40,40,80,0.8));
+.attack-button.basico {
+  border-left: 6px solid #4cc9f0;
+  background: linear-gradient(to right, rgba(76,201,240,0.15), rgba(40,40,80,0.9));
 }
 
-.attack-button.normal1:hover:not(:disabled) {
-  background: linear-gradient(to right, rgba(76,201,240,0.2), rgba(40,40,80,0.8));
+.attack-button.basico:hover:not(:disabled) {
+  background: linear-gradient(to right, rgba(76,201,240,0.25), rgba(40,40,80,0.9));
 }
 
-.attack-button.normal2 {
-  border-left: 5px solid #f72585;
-  background: linear-gradient(to right, rgba(247,37,133,0.1), rgba(40,40,80,0.8));
+.attack-button.rapido {
+  border-left: 6px solid #f72585;
+  background: linear-gradient(to right, rgba(247,37,133,0.15), rgba(40,40,80,0.9));
 }
 
-.attack-button.normal2:hover:not(:disabled) {
-  background: linear-gradient(to right, rgba(247,37,133,0.2), rgba(40,40,80,0.8));
+.attack-button.rapido:hover:not(:disabled) {
+  background: linear-gradient(to right, rgba(247,37,133,0.25), rgba(40,40,80,0.9));
 }
 
 .attack-button.special {
-  border-left: 5px solid #ff9800;
-  background: linear-gradient(45deg, rgba(255,152,0,0.3), rgba(255,235,59,0.2));
+  border-left: 6px solid #ff9800;
+  background: linear-gradient(45deg, rgba(255,152,0,0.4), rgba(255,235,59,0.3));
   color: #fff;
 }
 
 .attack-button.special:not(:disabled):hover {
-  background: linear-gradient(45deg, rgba(255,152,0,0.5), rgba(255,235,59,0.3));
+  background: linear-gradient(45deg, rgba(255,152,0,0.6), rgba(255,235,59,0.4));
   animation: specialGlow 1.5s infinite;
 }
 
 @keyframes specialGlow {
-  0%, 100% { box-shadow: 0 0 5px rgba(255,152,0,0.5); }
-  50% { box-shadow: 0 0 20px rgba(255,152,0,0.8); }
+  0%, 100% { box-shadow: 0 0 10px rgba(255,152,0,0.6); }
+  50% { box-shadow: 0 0 25px rgba(255,152,0,0.9); }
 }
 
 /* Estilo das teclas - parece teclas reais */
 .attack-key {
-  display: inline-block;
-  min-width: 40px;
-  height: 40px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 50px;
+  height: 50px;
   background: linear-gradient(135deg, #444, #222);
   color: #fff;
-  border-radius: 4px;
-  text-align: center;
-  line-height: 30px;
+  border-radius: 8px;
   font-weight: bold;
-  margin-right: 12px;
+  margin-right: 15px;
   box-shadow: 
-    0 2px 0 #111,
-    0 3px 1px rgba(0,0,0,0.3),
-    inset 0 0 5px rgba(0,0,0,0.5);
+    0 4px 0 #111,
+    0 6px 2px rgba(0,0,0,0.4),
+    inset 0 0 8px rgba(0,0,0,0.5);
   text-shadow: 0 -1px 0 #000;
-  border: 1px solid #333;
+  border: 2px solid #333;
   font-family: 'Courier New', monospace;
-  font-size: 2rem;
+  font-size: 2.2rem;
 }
 
 .attack-info {
@@ -434,29 +474,33 @@
 
 .attack-name {
   font-weight: bold;
-  font-size: 1.5rem;
-  margin-bottom: 3px;
+  font-size: 1.8rem;
+  margin-bottom: 5px;
 }
 
 .special-required {
-  background: rgba(0,0,0,0.4);
-  padding: 8px 8px;
-  border-radius: 10px;
-  font-size: 1rem;
+  background: rgba(0,0,0,0.5);
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 1.4rem;
   color: #ffeb3b;
-  margin-left: 50px;
-  box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+  margin-left: 15px;
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.4);
+  font-weight: 700;
 }
 
 /* Mensagem de espera da CPU */
 .waiting-message {
-  padding: 15px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 8px;
+  padding: 20px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 12px;
   text-align: center;
   font-style: italic;
   margin-top: auto;
   animation: pulseOpacity 2s infinite;
+  font-size: 1.8rem;
+  backdrop-filter: blur(5px);
+  border: 2px solid rgba(255,255,255,0.1);
 }
 
 @keyframes pulseOpacity {
@@ -464,92 +508,262 @@
   50% { opacity: 1; }
 }
 
-/* Responsividade */
-@media (max-width: 1200px) {
+/* RESPONSIVIDADE */
+
+/* Para tablets grandes e monitores menores */
+@media (max-width: 1400px) {
   .combat-area {
-    gap: 15px;
+    gap: 30px;
   }
   
   .character {
-    max-width: 280px;
-    padding: 15px;
+    max-width: 400px;
+    padding: 25px;
   }
   
   .character-image-container {
-    height: 220px;
+    height: 240px;
   }
   
   .animation-area {
-    max-width: 400px;
-    height: 350px;
+    max-width: 450px;
+    height: 380px;
+  }
+  
+  .titulo {
+    font-size: 3.5rem;
   }
 }
 
-@media (max-width: 992px) {
+/* Para tablets */
+@media (max-width: 1024px) {
+  .combat-area {
+    gap: 20px;
+    padding: 0 15px;
+  }
+  
+  .character {
+    max-width: 350px;
+    padding: 20px;
+  }
+  
+  .character h2 {
+    font-size: 2.2rem;
+  }
+  
+  .character-image-container {
+    height: 200px;
+  }
+  
+  .animation-area {
+    max-width: 350px;
+    height: 320px;
+  }
+  
+  .titulo {
+    font-size: 3rem;
+    margin: 20px 0;
+  }
+  
+  .battle-message {
+    font-size: 1.8rem;
+    padding: 20px;
+  }
+  
+  .attack-button {
+    padding: 18px 22px;
+    font-size: 1.6rem;
+  }
+  
+  .attack-key {
+    min-width: 45px;
+    height: 45px;
+    font-size: 2rem;
+  }
+  
+  .attack-name {
+    font-size: 1.6rem;
+  }
+}
+
+/* Para tablets pequenos e celulares grandes */
+@media (max-width: 768px) {
+  .batalha-container {
+    padding: 15px;
+  }
+  
   .combat-area {
     flex-direction: column;
     align-items: center;
     gap: 30px;
+    padding: 0 10px;
   }
   
   .character {
     max-width: 100%;
     width: 100%;
+    padding: 25px;
+  }
+  
+  .character-image-container {
+    height: 250px;
   }
   
   .animation-area {
     order: -1;
     max-width: 100%;
-    height: 300px;
+    height: 280px;
     margin-bottom: 20px;
   }
   
-  .battle-over-message {
-    font-size: 2rem;
-    padding: 15px 30px;
-  }
-}
-
-@media (max-width: 768px) {
   .titulo {
-    font-size: 2.2rem;
-  }
-  
-  .character h2 {
-    font-size: 1.5rem;
+    font-size: 2.5rem;
+    margin: 15px 0 10px;
   }
   
   .battle-message {
-    font-size: 1rem;
-    padding: 10px;
+    font-size: 1.6rem;
+    padding: 15px;
+  }
+  
+  .battle-over-message {
+    font-size: 2.2rem;
+    padding: 20px 35px;
   }
   
   .attack-button {
-    padding: 10px 12px;
-    font-size: 0.9rem;
+    padding: 16px 20px;
+    font-size: 1.5rem;
   }
   
   .attack-key {
-    min-width: 24px;
-    height: 24px;
-    line-height: 24px;
-    font-size: 0.8rem;
-    margin-right: 8px;
+    min-width: 40px;
+    height: 40px;
+    font-size: 1.8rem;
+    margin-right: 12px;
   }
   
   .attack-name {
-    font-size: 1rem;
+    font-size: 1.5rem;
+  }
+  
+  .special-required {
+    font-size: 1.2rem;
+    padding: 8px 10px;
+  }
+  
+  .health-bars {
+    font-size: 1.6rem;
+    padding: 12px;
+  }
+  
+  .health-bars .barra-label {
+    font-size: 1.6rem;
+  }
+  
+  .waiting-message {
+    font-size: 1.6rem;
+    padding: 18px;
   }
 }
 
+/* Para celulares */
 @media (max-width: 480px) {
+  .batalha-container {
+    padding: 10px;
+  }
+  
   .titulo {
-    font-size: 1.8rem;
+    font-size: 2rem;
     margin: 10px 0;
   }
   
-  .batalha-container {
+  .character {
+    padding: 20px 15px;
+  }
+  
+  .character h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+  
+  .character-image-container {
+    height: 200px;
+    margin-bottom: 15px;
+  }
+  
+  .animation-area {
+    height: 220px;
+    margin-bottom: 15px;
+  }
+  
+  .battle-message {
+    font-size: 1.4rem;
+    padding: 12px;
+  }
+  
+  .battle-over-message {
+    font-size: 1.8rem;
+    padding: 15px 25px;
+  }
+  
+  .attack-buttons {
+    gap: 12px;
+  }
+  
+  .attack-button {
+    padding: 14px 16px;
+    font-size: 1.4rem;
+  }
+  
+  .attack-key {
+    min-width: 35px;
+    height: 35px;
+    font-size: 1.6rem;
+    margin-right: 10px;
+  }
+  
+  .attack-name {
+    font-size: 1.4rem;
+  }
+  
+  .special-required {
+    font-size: 1.1rem;
+    padding: 6px 8px;
+    margin-left: 10px;
+  }
+  
+  .health-bars {
+    font-size: 1.4rem;
     padding: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .health-bars .barra-label {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+  }
+  
+  .waiting-message {
+    font-size: 1.4rem;
+    padding: 15px;
+  }
+  
+  .light-effect {
+    width: 200px;
+    height: 200px;
+    filter: blur(60px);
+  }
+}
+
+/* Para celulares muito pequenos */
+@media (max-width: 360px) {
+  .titulo {
+    font-size: 1.8rem;
+  }
+  
+  .character h2 {
+    font-size: 1.6rem;
   }
   
   .character-image-container {
@@ -557,15 +771,30 @@
   }
   
   .animation-area {
-    height: 250px;
+    height: 200px;
   }
   
-  .battle-over-message {
-    font-size: 1.5rem;
-    padding: 10px 20px;
+  .attack-button {
+    padding: 12px 14px;
+    font-size: 1.3rem;
   }
   
-  .attack-buttons {
-    gap: 8px;
+  .attack-key {
+    min-width: 32px;
+    height: 32px;
+    font-size: 1.4rem;
+  }
+  
+  .battle-message {
+    font-size: 1.2rem;
+  }
+}
+
+/* Garantir compatibilidade do background-clip */
+@supports not (-webkit-background-clip: text) {
+  .titulo {
+    color: #4cc9f0;
+    background: none;
+    -webkit-text-fill-color: initial;
   }
 }

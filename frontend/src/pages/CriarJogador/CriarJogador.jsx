@@ -93,7 +93,7 @@ export default function CriarJogador() {
 
   const verificarNomeExistente = async (nome) => {
     try {
-      const response = await api.get('/players/check', {
+      const response = await api.get('/players/check/', {
         params: { 
           nome: nome.trim() 
         },

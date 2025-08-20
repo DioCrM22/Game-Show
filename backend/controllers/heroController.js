@@ -7,31 +7,33 @@ const BASIC_HERO_ATTRIBUTES = [
   'nome',
   'gif_entrada',
   'gif_ataque_especial',
-  'gif_vitoria'
-];
-
-// Campos completos para detalhes do herói
-const FULL_HERO_ATTRIBUTES = [
-  ...BASIC_HERO_ATTRIBUTES,
+  'gif_saida',
+  //atributos dos personagens
   'vida_base',
   'defesa',
   'velocidade',
-  'ataque1_nome',
-  'ataque1_dano',
-  'ataque1_precisao',
-  'ataque2_nome',
-  'ataque2_dano',
-  'ataque2_precisao',
+  //ataques
+  'ataque_basico_nome',
+  'ataque_basico_dano', 
+  'ataque_basico_precisao',
+  'ataque_rapido_nome',
+  'ataque_rapido_dano',
+  'ataque_rapido_precisao',
   'ataque_especial_nome',
   'ataque_especial_dano',
-  'ataque_especial_precisao'
+  'ataque_especial_precisao',
+  //imagem
+  'imagem_url',
 ];
+
+// Campos completos para detalhes do herói
+const FULL_HERO_ATTRIBUTES = [...BASIC_HERO_ATTRIBUTES,];
 
 //Retorna todos os heróis cadastrados (apenas informações básicas)
 export const getAllHeroes = async (req, res) => {
   try {
     const heroes = await Hero.findAll({
-      attributes: BASIC_HERO_ATTRIBUTES,
+      attributes: FULL_HERO_ATTRIBUTES,
       order: [['nome', 'ASC']] // Ordena por nome
     });
     
@@ -114,7 +116,7 @@ export const getHeroGifs = async (req, res) => {
       attributes: [
         'gif_entrada',
         'gif_ataque_especial',
-        'gif_vitoria'
+        'gif_saida'
       ]
     });
 
@@ -130,7 +132,7 @@ export const getHeroGifs = async (req, res) => {
       data: {
         entrance: hero.gif_entrada,
         special_attack: hero.gif_ataque_especial,
-        victory: hero.gif_vitoria
+        victory: hero.gif_saida
       }
     });
     
