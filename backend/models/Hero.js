@@ -13,17 +13,22 @@ const Hero = sequelize.define('Hero', {
   gif_entrada: {
     type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: 'default_entrada.gif'
+    defaultValue: '/gifs/default/entrada.gif'
   },
   gif_ataque_especial: {
     type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: 'default_ataque_especial.gif'
+    defaultValue: '/gifs/default/especial.gif'
   },
   gif_saida: {
     type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: 'default_saida.gif'
+    defaultValue: '/gifs/default/saida.gif' 
+  },
+  //imagem heroi
+   imagem_url: {
+    type: DataTypes.STRING,
+    defaultValue: '/images/default-hero.jpg'
   },
   // Atributos de combate
   vida_base: {

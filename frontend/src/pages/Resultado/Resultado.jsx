@@ -5,98 +5,97 @@ import './resultado-styles.css';
 export default function Resultado() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { vencedor, perdedor, gifVitoria } = location.state || {};
+  const { vencedor, perdedor, gifVitoria, jogador1, jogador2 } = location.state || {};
   
-  const [historicoBatalhas, setHistoricoBatalhas] = useState([]);
   const [showAnimation, setShowAnimation] = useState(true);
 
   useEffect(() => {
-  const carregarHistorico = async () => {
-      const data = await response.json();
-      
-      const historicoFormatado = data.map(batalha => ({
-        id: batalha.id,
-        jogador1: { 
-          nome: batalha.Player1?.nome || 'CPU', 
-          heroi: { nome: batalha.player1_hero } 
-        },
-        jogador2: { 
-          nome: batalha.Player2?.nome || 'CPU', 
-          heroi: { nome: batalha.player2_hero } 
-        },
-        vencedor: batalha.Player1?.id === batalha.winner_id 
-          ? batalha.Player1.nome 
-          : (batalha.Player2?.id === batalha.winner_id ? batalha.Player2.nome : 'CPU'),
-        data: new Date(batalha.createdAt).toLocaleString(),
-        rounds: batalha.rounds
-      }));
-  };
+    const timer = setTimeout(() => {
+      setShowAnimation(false);
+    }, 3500);
 
-  const timer = setTimeout(() => {
-    setShowAnimation(false);
-  }, 3500);
-
-  return () => clearTimeout(timer);
-}, [vencedor, perdedor]);
+    return () => clearTimeout(timer);
+  }, [vencedor, perdedor]);
 
   const handleVoltarMenu = () => {
-  setHistoricoBatalhas([]);
-  navigate('/', { replace: true });
-};
+    navigate('/', { replace: true });
+  };
 
   const handleSelecionarPersonagens = () => {
-  // Verifica se o jogo era contra a CPU (quando um dos jogadores tem ID -1)
-  const isAgainstCPU = perdedor.id === -1 || vencedor.id === -1;
-  
-  navigate('/selecionar-personagem', {
-    state: {
-      ...location.state,
-      jogador1: {
-        id: vencedor.id === -1 ? perdedor.id : vencedor.id,
-        nome: vencedor.id === -1 ? perdedor.name : vencedor.name
-      },
-      jogador2: {
-        id: isAgainstCPU ? -1 : perdedor.id,
-        nome: isAgainstCPU ? 'CPU' : perdedor.name
-      },
-      // Mantém o modo de jogo baseado na presença da CPU
-      modoJogo: isAgainstCPU ? 'singleplayer' : 'multiplayer',
-      // Indica que deve manter os jogadores
-      manterJogadores: true
+    const isAgainstCPU = perdedor.id === -1 || vencedor.id === -1;
+    
+    if (isAgainstCPU) {
+      // MODO CPU: Jogador humano sempre como jogador1, CPU como jogador2
+      const jogadorHumano = vencedor.id !== -1 ? vencedor : perdedor;
+      
+      navigate('/selecionar-personagem', {
+        state: {
+          modoJogo: 'singleplayer',
+          jogadores: {
+            jogador1: {
+              id: jogadorHumano.id,
+              nome: jogadorHumano.name || jogadorHumano.nome
+            },
+            jogador2: {
+              id: -1,
+              nome: 'CPU'
+            }
+          },
+          manterJogadores: true
+        }
+      });
+    } else {
+      // MODO MULTIPLAYER: Manter a mesma ordem dos jogadores
+      navigate('/selecionar-personagem', {
+        state: {
+          modoJogo: 'multiplayer',
+          jogadores: {
+            jogador1: {
+              id: vencedor.id,
+              nome: vencedor.name || vencedor.nome
+            },
+            jogador2: {
+              id: perdedor.id,
+              nome: perdedor.name || perdedor.nome
+            }
+          },
+          manterJogadores: true
+        }
+      });
     }
-  });
-};
+  };
 
   const handleJogarNovamente = () => {
-  navigate('/batalha', {
-    state: {
-      jogador1: {
-        id: vencedor.id,
-        nome: vencedor.name,
-        hero: {
-          ...vencedor.hero,
-          gifs: {
-            entrada: vencedor.hero.gif_entrada,
-            especial: vencedor.hero.gif_ataque_especial,
-            saida: vencedor.hero.gif_saida
+    // CORREÇÃO: Enviar jogador1 e jogador2 diretamente (não dentro de "jogadores")
+    navigate('/batalha', {
+      state: {
+        jogador1: {
+          id: vencedor.id,
+          nome: vencedor.name || vencedor.nome,
+          hero: {
+            ...vencedor.hero,
+            gifs: {
+              entrada: vencedor.hero.gif_entrada || vencedor.hero.gifs?.entrada,
+              especial: vencedor.hero.gif_ataque_especial || vencedor.hero.gifs?.especial,
+              saida: vencedor.hero.gif_saida || vencedor.hero.gifs?.saida
+            }
           }
-        }
-      },
-      jogador2: {
-        id: perdedor.id,
-        nome: perdedor.name,
-        hero: {
-          ...perdedor.hero,
-          gifs: {
-            entrada: perdedor.hero.gif_entrada,
-            especial: perdedor.hero.gif_ataque_especial,
-            saida: perdedor.hero.gif_saida
+        },
+        jogador2: {
+          id: perdedor.id,
+          nome: perdedor.name || perdedor.nome,
+          hero: {
+            ...perdedor.hero,
+            gifs: {
+              entrada: perdedor.hero.gif_entrada || perdedor.hero.gifs?.entrada,
+              especial: perdedor.hero.gif_ataque_especial || perdedor.hero.gifs?.especial,
+              saida: perdedor.hero.gif_saida || perdedor.hero.gifs?.saida
+            }
           }
         }
       }
-    }
-  });
-};
+    });
+  };
 
   if (!vencedor) {
     return (
@@ -114,38 +113,39 @@ export default function Resultado() {
     );
   }
 
+  const isAgainstCPU = perdedor.id === -1 || vencedor.id === -1;
+
   return (
     <div className="result-container">
-      {/* Efeitos de luz */}
       <div className="light-effect player-1-light"></div>
       <div className="light-effect player-2-light"></div>
 
       {showAnimation ? (
         <div className="victory-animation">
           <img 
-            src={gifVitoria || vencedor.hero.gifs.saida} 
-            alt={`${vencedor.name} venceu`}
+            src={gifVitoria || vencedor.hero.gifs?.saida || vencedor.hero.gif_saida} 
+            alt={`${vencedor.name || vencedor.nome} venceu`}
             className="victory-gif"
           />
           <div className="victory-overlay">
-            <h2 className="victory-title pulse-animation">{vencedor.name} VENCEU!</h2>
+            <h2 className="victory-title pulse-animation">{vencedor.name || vencedor.nome} VENCEU!</h2>
           </div>
         </div>
       ) : (
         <div className="result-content">
-          {/* Cabeçalho */}
           <div className="result-header">
             <h1 className="result-title">🏆 RESULTADO DA BATALHA 🏆</h1>
-            <div className="game-mode-badge">{vencedor.id === -1 || perdedor.id === -1 ? '👤 Jogador vs CPU 🖥️' : '👤 Jogador vs Jogador 👤'}</div>
+            <div className="game-mode-badge">
+              {isAgainstCPU ? '👤 Jogador vs CPU 🖥️' : '👤 Jogador vs Jogador 👤'}
+            </div>
           </div>
 
-          {/* Card do Vencedor */}
           <div className="winner-section">
             <div className="winner-card glow-effect">
               <div className="winner-info">
                 <div className="winner-badge">
                   <span className="trophy-icon">🏆</span>
-                  <h2 className="winner-name">{vencedor.name}</h2>
+                  <h2 className="winner-name">{vencedor.name || vencedor.nome}</h2>
                 </div>
                 <p className="winner-subtitle">foi VITORIOSO com</p>
                 <h3 className="winner-hero">{vencedor.hero.nome}</h3>
@@ -164,13 +164,13 @@ export default function Resultado() {
                     <span className="stat-value">{vencedor.hero.defesa || 30} DEF</span>
                   </div>
                   <div className="stat-item">
-                      <span className="stat-icon">💪</span>
-                      <span className="stat-value">{vencedor.hero.forca || 
-                        Math.round((
-                          (vencedor.hero.ataques?.basico?.dano || 15) +
-                          (vencedor.hero.ataques?.rapido?.dano || 10) +
-                          (vencedor.hero.ataques?.especial?.dano || 30)
-                        ) / 3)} STR</span>
+                    <span className="stat-icon">💪</span>
+                    <span className="stat-value">{vencedor.hero.forca || 
+                      Math.round((
+                        (vencedor.hero.ataques?.basico?.dano || 15) +
+                        (vencedor.hero.ataques?.rapido?.dano || 10) +
+                        (vencedor.hero.ataques?.especial?.dano || 30)
+                      ) / 3)} STR</span>
                   </div>
                 </div>
               </div>
@@ -187,12 +187,11 @@ export default function Resultado() {
             
             <div className="versus-info">
               <p className="versus-text">
-                Derrotou <strong>{perdedor.name}</strong> com <strong>{perdedor.hero.nome}</strong> em <strong>{historicoBatalhas[0]?.rounds || 5}</strong> rodadas
+                Derrotou <strong>{perdedor.name || perdedor.nome}</strong> com <strong>{perdedor.hero.nome}</strong>
               </p>
             </div>
           </div>
           
-          {/* Botões de Ação */}
           <div className="action-buttons">
             <button 
               onClick={handleVoltarMenu}
@@ -205,7 +204,7 @@ export default function Resultado() {
               onClick={handleSelecionarPersonagens}
               className="action-button select-button"
             >
-              ✅ Selecionar Personagens
+              🔄 Selecionar Novos Personagens
             </button>
             
             <button 
@@ -213,7 +212,7 @@ export default function Resultado() {
               className="action-button play-button"
               disabled={!vencedor}
             >
-              🔄 Jogar Novamente
+              ⚔️ Jogar Novamente
             </button>
           </div>
         </div>
