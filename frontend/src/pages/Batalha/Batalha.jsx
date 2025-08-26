@@ -3,8 +3,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import BarraDeVida from '../../componentes/BarraDeVida/BarraDeVida';
 import './batalha-styles.css';
 
-const API_BASE_URL = 'http://localhost:3001/api';
-
 export default function Batalha() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,130 +30,134 @@ export default function Batalha() {
       p2: 0
     },
     isSpecial: false,
-    battleOver: false,
-    isCPU: false
+    battleOver: false
   });
 
-  const [currentBattleId, setCurrentBattleId] = useState(null);
-
-  // Inicializa a batalha no backend
+  // Inicializa a batalha
   useEffect(() => {
-    const initBattle = async () => {
+    const initBattle = () => {
       try {
-        console.log('Iniciando batalha no backend...', { jogador1, jogador2 });
+        console.log('Dados recebidos na batalha:', { jogador1, jogador2 });
         
-        if (!jogador1 || !jogador1.hero) {
-          throw new Error('Dados do jogador 1 inválidos');
+        if (!jogador1 || !jogador1.hero || !jogador2 || !jogador2.hero) {
+          throw new Error('Dados dos jogadores inválidos');
         }
 
-        const response = await fetch(`${API_BASE_URL}/battle/start`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+        // Formatar jogador 1
+        const player1 = {
+          id: jogador1.id,
+          name: jogador1.nome,
+          hero: {
+            ...jogador1.hero,
+            vida_base: jogador1.hero.vida_base || 100,
+            defesa: jogador1.hero.defesa || 10,
+            velocidade: jogador1.hero.velocidade || 50,
+            ataques: {
+              basico: {
+                nome: jogador1.hero.ataques?.basico?.nome || 'Ataque Básico',
+                dano: jogador1.hero.ataques?.basico?.dano || 20,
+                precisao: jogador1.hero.ataques?.basico?.precisao || 80
+              },
+              rapido: {
+                nome: jogador1.hero.ataques?.rapido?.nome || 'Ataque Rápido',
+                dano: jogador1.hero.ataques?.rapido?.dano || 15,
+                precisao: jogador1.hero.ataques?.rapido?.precisao || 90
+              },
+              especial: {
+                nome: jogador1.hero.ataques?.especial?.nome || 'Ataque Especial',
+                dano: jogador1.hero.ataques?.especial?.dano || 30,
+                precisao: jogador1.hero.ataques?.especial?.precisao || 100
+              }
+            },
+            gifs: {
+              entrada: jogador1.hero.gif_entrada || '/gifs/default/entrada.gif',
+              especial: jogador1.hero.gif_ataque_especial || '/gifs/default/especial.gif',
+              saida: jogador1.hero.gif_saida || '/gifs/default/saida.gif'
+            }
+          }
+        };
+
+        // Formatar jogador 2 (CPU ou jogador)
+        const isCPU = jogador2.id === -1;
+        const player2 = {
+          id: jogador2.id,
+          name: isCPU ? 'CPU' : jogador2.nome,
+          hero: {
+            ...jogador2.hero,
+            vida_base: jogador2.hero.vida_base || 100,
+            defesa: jogador2.hero.defesa || 10,
+            velocidade: jogador2.hero.velocidade || 50,
+            ataques: {
+              basico: {
+                nome: jogador2.hero.ataques?.basico?.nome || 'Ataque Básico',
+                dano: jogador2.hero.ataques?.basico?.dano || 20,  // Adicionado
+                precisao: jogador2.hero.ataques?.basico?.precisao || 80  // Adicionado
+              },
+              rapido: {
+                nome: jogador2.hero.ataques?.rapido?.nome || 'Ataque Rápido',
+                dano: jogador2.hero.ataques?.rapido?.dano || 15,  // Adicionado
+                precisao: jogador2.hero.ataques?.rapido?.precisao || 90  // Adicionado
+              },
+              especial: {
+                nome: jogador2.hero.ataques?.especial?.nome || 'Ataque Especial',
+                dano: jogador2.hero.ataques?.especial?.dano || 30,  // Adicionado
+                precisao: jogador2.hero.ataques?.especial?.precisao || 100  // Adicionado
+              }
+            },
+            gifs: {
+              entrada: jogador2.hero.gif_entrada || '/gifs/default/entrada.gif',
+              especial: jogador2.hero.gif_ataque_especial || '/gifs/default/especial.gif',
+              saida: jogador2.hero.gif_saida || '/gifs/default/saida.gif'
+            }
+          }
+        };
+
+        setBattleState({
+          ...battleState,
+          players: { player1, player2 },
+          health: {
+            p1: player1.hero.vida_base,
+            p2: player2.hero.vida_base
           },
-          body: JSON.stringify({
-            player1Id: jogador1.id,
-            player2Id: jogador2.id === -1 ? null : jogador2.id
-          })
+          isCPU,
+          loading: false
         });
 
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || 'Erro ao iniciar batalha');
-        }
-
-        console.log('Batalha iniciada no backend:', data);
-
-        setCurrentBattleId(data.battleId);
-
-        // Formatar jogadores para o estado local
-        const player1 = {
-          id: data.players.player1.id,
-          name: data.players.player1.name,
-          hero: {
-            ...data.players.player1.hero,
-            gifs: {
-              entrada: data.players.player1.hero.gif_entrada,
-              especial: data.players.player1.hero.gif_ataque_especial,
-              saida: data.players.player1.hero.gif_saida
-            }
-          }
-        };
-
-        const player2 = {
-          id: data.players.player2.id,
-          name: data.players.player2.name,
-          hero: {
-            ...data.players.player2.hero,
-            gifs: {
-              entrada: data.players.player2.hero.gif_entrada,
-              especial: data.players.player2.hero.gif_ataque_especial,
-              saida: data.players.player2.hero.gif_saida
-            }
-          }
-        };
-
-        setBattleState(prev => ({
-          ...prev,
-          players: { player1, player2 },
-          health: data.health,
-          specials: data.specials,
-          isCPU: data.players.player2.id === -1,
-          loading: false
-        }));
-
         playEntranceAnimations(player1, player2);
-
       } catch (error) {
         console.error('Erro ao iniciar batalha:', error);
-        alert(`Erro ao iniciar batalha: ${error.message}`);
         navigate('/selecionar-personagem');
       }
     };
 
-    if (jogador1 && jogador2) {
-      initBattle();
-    }
+    initBattle();
   }, [navigate, jogador1, jogador2]);
 
   // Turno da CPU
   useEffect(() => {
-    if (battleState.isCPU && battleState.turn === 'player2' && !battleState.loading && currentBattleId) {
-      const timer = setTimeout(async () => {
-        try {
-          const response = await fetch(`${API_BASE_URL}/battle/cpu-turn`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              battleId: currentBattleId
-            })
-          });
-
-          const data = await response.json();
-
-          if (!response.ok) {
-            throw new Error(data.error || 'Erro no turno da CPU');
-          }
-
-          // Atualiza estado com resultado da CPU
-          processBattleResult(data, true);
-
-        } catch (error) {
-          console.error('Erro no turno da CPU:', error);
+    if (battleState.isCPU && battleState.turn === 'player2' && !battleState.loading) {
+      const timer = setTimeout(() => {
+        const specialReady = battleState.specials.p2 >= 3;
+        const attackType = determineCPUAttack(battleState.players.player2.hero, specialReady);
+        
+        if (attackType === 'special') {
           setBattleState(prev => ({
             ...prev,
-            message: 'Erro na CPU',
-            loading: false
+            animation: battleState.players.player2.hero.gifs.especial,
+            isSpecial: true,
+            loading: true,
+            message: `${battleState.players.player2.name} preparando ataque especial!`
           }));
         }
+        
+        setTimeout(() => {
+          handleAttack(attackType, true);
+        }, attackType === 'special' ? 1000 : 0);
       }, 1500);
 
       return () => clearTimeout(timer);
     }
-  }, [battleState.turn, battleState.loading, battleState.isCPU, currentBattleId]);
+  }, [battleState.turn, battleState.loading, battleState.isCPU, battleState.specials.p2]);
 
   const playEntranceAnimations = (player1, player2) => {
     // Animação de entrada do jogador 1
@@ -197,99 +199,117 @@ export default function Batalha() {
     }, 2000);
   };
 
-  const handleAttack = async (attackType, isPlayer2 = false) => {
-    if (battleState.loading || battleState.battleOver || !currentBattleId) return;
-    
-    const playerId = isPlayer2 ? battleState.players.player2.id : battleState.players.player1.id;
+  const determineCPUAttack = (cpuHero, specialReady) => {
+    if (specialReady && Math.random() > 0.3) return 'special';
+    return Math.random() > 0.6 ? 'basico' : 'rapido';
+  };
+
+  const handleAttack = (attackType, isPlayer2 = false) => {
+    if (battleState.loading || battleState.battleOver) return;
+    if ((!isPlayer2 && battleState.turn !== 'player1') || 
+        (isPlayer2 && battleState.turn !== 'player2')) return;
+
     const attacker = battleState.players[isPlayer2 ? 'player2' : 'player1'];
+    const defender = battleState.players[isPlayer2 ? 'player1' : 'player2'];
+    const isSpecial = attackType === 'special';
 
     // Verificação de dados
-    if (!attacker?.hero) {
+    if (!attacker?.hero || !defender?.hero) {
       console.error('Dados do herói faltando!');
       return;
     }
 
-    // Configura estado visual inicial
-    const isSpecial = attackType === 'special';
+    // Verifica especial
+    if (isSpecial && battleState.specials[isPlayer2 ? 'p2' : 'p1'] < 3) {
+      setBattleState(prev => ({ ...prev, 
+        message: `${attacker.name} tentou usar especial mas não está pronto!`
+      }));
+      return;
+    }
+
+    // Configura estado - SOMENTE especial mostra animação
     setBattleState(prev => ({
       ...prev,
       animation: isSpecial ? attacker.hero.gifs.especial : null,
       isSpecial,
       loading: true,
-      message: `${attacker.name} usou ${getAttackName(attackType, attacker)}!`
+      message: `${attacker.name} usou ${
+      isSpecial ? attacker.hero.ataques.especial.nome :
+      attackType === 'basico' ? attacker.hero.ataques.basico.nome : 
+      attacker.hero.ataques.rapido.nome
+    }!`
     }));
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/battle/turn`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          battleId: currentBattleId,
-          playerId: playerId,
-          attackType: attackType
-        })
+    // Executa o ataque após delay
+    setTimeout(() => {
+      // Obter dados do ataque com fallbacks
+      const getAttackData = (type) => {
+        const ataques = attacker.hero.ataques;
+        
+        switch(type) {
+          case 'basico':
+            return {
+              damage: ataques.basico.dano,
+              accuracy: ataques.basico.precisao
+            };
+          case 'rapido':
+            return {
+              damage: ataques.rapido.dano,
+              accuracy: ataques.rapido.precisao
+            };
+          case 'special':
+            return {
+              damage: ataques.especial.dano,
+              accuracy: ataques.especial.precisao
+            };
+          default:
+            return {
+              damage: 10,
+              accuracy: 80
+            };
+        }
+      };
+
+      const { damage, accuracy } = getAttackData(attackType);
+      const didHit = isSpecial || Math.random() * 100 <= accuracy;
+      const defenseReduction = Math.min(0.5, (defender.hero.defesa || 10) / 200);
+      const finalDamage = didHit ? Math.max(1, Math.floor(damage * (1 - defenseReduction))) : 0;
+
+      setBattleState(prev => {
+        const newHealth = {
+          p1: isPlayer2 ? Math.max(0, prev.health.p1 - finalDamage) : prev.health.p1,
+          p2: isPlayer2 ? prev.health.p2 : Math.max(0, prev.health.p2 - finalDamage)
+        };
+
+        const battleOver = newHealth.p1 <= 0 || newHealth.p2 <= 0;
+        if (battleOver) {
+          setTimeout(() => navigate('/resultado', { 
+            state: {
+              vencedor: newHealth.p1 > 0 ? prev.players.player1 : prev.players.player2,
+              perdedor: newHealth.p1 > 0 ? prev.players.player2 : prev.players.player1,
+              gifVitoria: (newHealth.p1 > 0 ? prev.players.player1 : prev.players.player2).hero.gifs.saida
+            }
+          }), 1000);
+        }
+
+        return {
+          ...prev,
+          message: didHit 
+            ? `${attacker.name} causou ${finalDamage} de dano!` 
+            : `${attacker.name} errou o ataque!`,
+          health: newHealth,
+          specials: {
+            ...prev.specials,
+            [isPlayer2 ? 'p2' : 'p1']: isSpecial ? 0 : Math.min(3, prev.specials[isPlayer2 ? 'p2' : 'p1'] + 1)
+          },
+          loading: false,
+          battleOver,
+          turn: battleOver ? null : isPlayer2 ? 'player1' : 'player2',
+          animation: null,
+          isSpecial: false
+        };
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro ao executar ataque');
-      }
-
-      processBattleResult(data, isPlayer2);
-
-    } catch (error) {
-      console.error('Erro ao executar ataque:', error);
-      setBattleState(prev => ({
-        ...prev,
-        message: 'Erro de conexão',
-        loading: false,
-        animation: null,
-        isSpecial: false
-      }));
-    }
-  };
-
-  const processBattleResult = (data, isPlayer2 = false) => {
-    const attacker = battleState.players[isPlayer2 ? 'player2' : 'player1'];
-    
-    // Atualiza estado com resultado do backend
-    setBattleState(prev => ({
-      ...prev,
-      health: {
-        p1: data.health.p1,
-        p2: data.health.p2
-      },
-      specials: data.specials,
-      message: data.message,
-      animation: data.animation || null,
-      loading: false,
-      battleOver: data.battleOver,
-      turn: data.nextTurn || null,
-      isSpecial: data.animation ? true : false
-    }));
-
-    // Se batalha terminou, navega para resultado
-    if (data.battleOver && data.winner && data.loser) {
-      setTimeout(() => {
-        finalizarBatalha(data.winner, data.loser);
-      }, 2000);
-    }
-  };
-
-  const getAttackName = (attackType, attacker) => {
-    switch(attackType) {
-      case 'basico':
-        return 'Ataque Básico';
-      case 'rapido':
-        return 'Ataque Rápido';
-      case 'special':
-        return 'Ataque Especial';
-      default:
-        return 'Ataque';
-    }
+    }, isSpecial ? 2500 : 1500); 
   };
 
   // Listener de teclado
@@ -334,36 +354,36 @@ export default function Batalha() {
   }, [battleState.turn, battleState.loading, battleState.battleOver, battleState.isCPU]);
 
   const finalizarBatalha = (vencedor, perdedor) => {
-    navigate('/resultado', {
-      state: {
-        vencedor: {
-          id: vencedor.id,
-          name: vencedor.name,
-          hero: {
-            ...vencedor.hero,
-            nome: vencedor.hero.nome,
-            gifs: {
-              saida: vencedor.hero.gif_saida
-            }
+  navigate('/resultado', {
+    state: {
+      vencedor: {
+        id: vencedor.id,
+        name: vencedor.name,
+        hero: {
+          ...vencedor.hero,
+          nome: vencedor.hero.nome,
+          gifs: {
+            saida: vencedor.hero.gifs.saida
           }
-        },
-        perdedor: {
-          id: perdedor.id,
-          name: perdedor.name,
-          hero: {
-            ...perdedor.hero,
-            nome: perdedor.hero.nome,
-            gifs: {
-              saida: perdedor.hero.gif_saida
-            }
+        }
+      },
+      perdedor: {
+        id: perdedor.id,
+        name: perdedor.name,
+        hero: {
+          ...perdedor.hero,
+          nome: perdedor.hero.nome,
+          gifs: {
+            saida: perdedor.hero.gifs.saida
           }
-        },
-        gifVitoria: vencedor.hero.gif_saida,
-        jogador1: battleState.players.player1,
-        jogador2: battleState.players.player2
-      }
-    });
-  };
+        }
+      },
+      gifVitoria: vencedor.hero.gifs.saida,
+      jogador1: battleState.players.player1,
+      jogador2: battleState.players.player2
+    }
+  });
+};
 
   return (
     <div className="batalha-container">
@@ -407,7 +427,9 @@ export default function Batalha() {
                 <div className="attack-content">
                   <span className="attack-key">←</span>
                   <span className="attack-info">
-                    <span className="attack-name">Ataque Básico</span>
+                    <span className="attack-name">
+                      {battleState.players.player1?.hero?.ataques.basico.nome || 'Ataque Básico'}
+                    </span>
                   </span>
                 </div>
               </button>
@@ -419,7 +441,9 @@ export default function Batalha() {
                 <div className="attack-content">
                   <span className="attack-key">→</span>
                   <span className="attack-info">
-                    <span className="attack-name">Ataque Rápido</span>
+                    <span className="attack-name">
+                      {battleState.players.player1?.hero?.ataques.rapido.nome || 'Ataque Rápido'}
+                    </span>
                   </span>
                 </div>
               </button>
@@ -432,7 +456,9 @@ export default function Batalha() {
                 <div className="attack-content">
                   <span className="attack-key">↑</span>
                   <span className="attack-info">
-                    <span className="attack-name">Especial</span>
+                    <span className="attack-name">
+                      {battleState.players.player1?.hero?.ataques.especial.nome || 'Especial'}
+                    </span>
                   </span>
                   <span className="special-required">{battleState.specials.p1}/3</span>
                 </div>
@@ -507,7 +533,9 @@ export default function Batalha() {
                     <div className="attack-content">
                       <span className="attack-key">A</span>
                       <span className="attack-info">
-                        <span className="attack-name">Ataque Básico</span>
+                        <span className="attack-name">
+                          {battleState.players.player2?.hero?.ataques.basico.nome || 'Ataque Básico'}
+                        </span>
                       </span>
                     </div>
                   </button>
@@ -519,7 +547,9 @@ export default function Batalha() {
                     <div className="attack-content">
                       <span className="attack-key">D</span>
                       <span className="attack-info">
-                        <span className="attack-name">Ataque Rápido</span>
+                        <span className="attack-name">
+                          {battleState.players.player2?.hero?.ataques.rapido.nome || 'Ataque Rápido'}
+                        </span>
                       </span>
                     </div>
                   </button>
@@ -532,7 +562,9 @@ export default function Batalha() {
                     <div className="attack-content">
                       <span className="attack-key">W</span>
                       <span className="attack-info">
-                        <span className="attack-name">Especial</span>
+                        <span className="attack-name">
+                          {battleState.players.player2?.hero?.ataques.especial.nome || 'Especial'}
+                        </span>
                       </span>
                       <span className="special-required">{battleState.specials.p2}/3</span>
                     </div>
