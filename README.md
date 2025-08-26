@@ -33,7 +33,6 @@
 * [📸 Screenshots + Efeitos](#-screenshots--efeitos)
 * [⚙️ Instalação](#️-instalação)
 * [🎮 Como Jogar](#-como-jogar)
-* [🧩 Estrutura do Projeto](#-estrutura-do-projeto)
 * [🔌 API](#-api)
 * [🛠️ Tecnologias](#️-tecnologias)
 * [🗺️ Roadmap](#️-roadmap)
@@ -175,38 +174,6 @@ Jogador 1 → Ataque Especial (↑) // requer 3 cargas
 * <kbd>A</kbd> Básico
 * <kbd>D</kbd> Rápido
 * <kbd>W</kbd> Especial
-
-</details>
-
----
-
-## 🧩 Estrutura do Projeto
-
-<details open>
-  <summary><strong>Árvore de diretórios</strong></summary>
-
-```text
-hero-battle-arena/
-├── backend/
-│   ├── controllers/
-│   │   └── battleController.js
-│   ├── models/
-│   │   ├── Player.js
-│   │   ├── Hero.js
-│   │   └── Battle.js
-│   ├── routes/
-│   │   └── battleRoutes.js
-│   └── server.js
-├── frontend/
-│   ├── src/
-│   │   ├── componentes/
-│   │   │   └── BarraDeVida/
-│   │   ├── paginas/
-│   │   │   └── Batalha/
-│   │   └── App.js
-│   └── public/
-└── README.md
-```
 
 </details>
 
